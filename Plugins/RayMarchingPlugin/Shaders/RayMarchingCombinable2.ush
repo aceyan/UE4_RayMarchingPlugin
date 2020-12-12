@@ -1,0 +1,117 @@
+#include  "/PluginShaders/SDFsLibrary.ush"
+
+
+//--------------------- common parameters --------------------
+//pOperationType
+//pOperandIndex
+//pSmooth
+
+//pGeometryType
+	// 0-sdSphere
+	// 1-sdBox
+	// 2-sdRoundBox
+	// 3-sdTorus
+	// 4-sdLink
+	// 5-sdCappedCylinder
+	// 6-sdCone
+	// 7-sdCapsule
+//pMaxSteps 
+//pWorldPosition
+//pObjectPosition
+//pCameraPosition
+//pDisThreshold
+//pSceneDepth
+//pCameraVector
+//
+//---------------------- geometry parameters ------------------
+//0-sdSphere  pSphereRadius 
+//1-sdBox  pBoxDimension
+//2-sdRoundBox pBoxDimension, pRound
+//3-sdTorus  pTorusDimension
+//4-sdLink pLinkLength, pLinkRadius1, pLinkRadius2
+//5-sdCappedCylinder pCylinderRadius, pCylinderLength
+//6-sdCone pConeAngle,pConeLength
+//7-sdCapsule pCapsuleDimension1, pCapsuleDimension2, pCapsuleRadius
+
+//---------------------- parameters for another object --------------------
+//p2GeometryType
+//p2ObjectPosition
+
+//---------------geometry parameters for another object -----------------------------
+//0-sdSphere  p2SphereRadius 
+//1-sdBox  p2BoxDimension
+//2-sdRoundBox p2BoxDimension, p2Round
+//3-sdTorus  p2TorusDimension
+//4-sdLink p2LinkLength, p2LinkRadius1, p2LinkRadius2
+//5-sdCappedCylinder p2CylinderRadius, p2CylinderLength
+//6-sdCone p2ConeAngle,p2ConeLength
+//7-sdCapsule p2CapsuleDimension1, p2CapsuleDimension2, p2CapsuleRadius
+
+
+
+SDFs sdfLibrary;
+float4 col = 0;
+float3 pos = pWorldPosition;
+float3 normal = 0;
+
+
+
+for (int i = 0; i < pMaxSteps; i++)
+{
+	if(pSceneDepth < length(pos - pCameraPosition)) 
+	break;
+	
+	float dist = sdfLibrary.sdMapFor2(pOperationType, pOperandIndex, pSmooth,
+					pos - pObjectPosition, pGeometryType,
+					pSphereRadius,
+					pBoxDimension,
+					pRound,
+					pTorusDimension,
+					pLinkLength, pLinkRadius1, pLinkRadius2,
+					pCylinderRadius, pCylinderLength,
+					pConeAngle, pConeLength,
+					pCapsuleDimension1, pCapsuleDimension2, pCapsuleRadius,
+					
+					pos - p2ObjectPosition, p2GeometryType,
+					p2SphereRadius,
+					p2BoxDimension,
+					p2Round,
+					p2TorusDimension,
+					p2LinkLength, p2LinkRadius1, p2LinkRadius2,
+					p2CylinderRadius, p2CylinderLength,
+					p2ConeAngle, p2ConeLength,
+					p2CapsuleDimension1, p2CapsuleDimension2, p2CapsuleRadius);
+					
+					
+	
+    if(dist < pDisThreshold)
+    {
+        col = float4(1, 0,0,1);
+		normal = sdfLibrary.sdNormalMapFor2(pOperationType, pOperandIndex, pSmooth,
+					pos - pObjectPosition, pGeometryType,
+					pSphereRadius,
+					pBoxDimension,
+					pRound,
+					pTorusDimension,
+					pLinkLength, pLinkRadius1, pLinkRadius2,
+					pCylinderRadius, pCylinderLength,
+					pConeAngle, pConeLength,
+					pCapsuleDimension1, pCapsuleDimension2, pCapsuleRadius,
+					
+					pos - p2ObjectPosition, p2GeometryType,
+					p2SphereRadius,
+					p2BoxDimension,
+					p2Round,
+					p2TorusDimension,
+					p2LinkLength, p2LinkRadius1, p2LinkRadius2,
+					p2CylinderRadius, p2CylinderLength,
+					p2ConeAngle, p2ConeLength,
+					p2CapsuleDimension1, p2CapsuleDimension2, p2CapsuleRadius);
+		
+        break;
+    }
+    pos += pCameraVector * dist;//need
+   
+}
+
+return float4(normal, col.a);

@@ -1,0 +1,78 @@
+
+struct RMStrutct
+{
+
+	float SphereSDF(float3 pos)
+	{
+		float dist = length(pos) - 50;
+		return dist;
+	}
+	
+	float BoxSDF( float3 p, float3 b )
+	{
+	  float3 q = abs(p) - b;
+	  return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+	}
+	
+	float TorusSDF(float3 pos, float2 radius)
+	{
+		float2 r = float2(length(pos.xy) - radius.x, pos.z);
+		return length(r) - radius.y;
+	}
+	
+	float f(float x, float y, float currenTtime)
+	{
+		return  60 * sin(x/ 100 + currenTtime ) * sin(y / 120 + currenTtime);
+	}
+	
+	float3 fNormal(float3 pos, float currenTtime)
+	{
+		float offset = 0.01f;
+		return normalize(float3(
+		f(pos.x - offset, pos.y, currenTtime) -  f(pos.x + offset, pos.y, currenTtime),
+		2.0f * offset,
+		f(pos.x, pos.y - offset, currenTtime) -  f(pos.x, pos.y + offset, currenTtime)
+		));
+	}
+	
+};
+
+RMStrutct RM;
+float4 col = 0;
+float3 pos = WorldPosition;
+float3 normal = 0;
+
+
+
+for (int i = 0; i < MaxSteps; i++)
+{
+	if(SceneDepth < length(pos - CameraPosition)) 
+	break;
+
+	/*
+	float dist = RM.SphereSDF(pos - objPos);
+	
+    if(dist < threshold)
+    {
+        col = float4(1, 0,0,1);
+		normal = RM.Normal(pos - objPos);
+	
+        break;
+    }
+	*/
+	
+	float3 locPos = pos - objPos;
+	if(locPos.z < RM.f(locPos.x, locPos.y, time))
+	{
+		
+		col = float4(1, 0,0,1);
+		normal = RM.fNormal(locPos, time);
+		break;
+	}
+	
+	
+    pos += CameraVector * stepLength;//need
+   
+}
+
+return float4(normal, col.a);

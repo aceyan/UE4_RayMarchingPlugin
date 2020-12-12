@@ -1,0 +1,141 @@
+
+struct RMStrutct
+{
+
+    float noise(float3 x, Texture2D NoiseTex, SamplerState TexSampler)
+	{
+		float3 f = frac(x);
+		float3 p = floor(x);
+		f = f * f * (3.0 - 2.0 * f);
+		 
+		float2 uv = (p.xy + float2(37.0, 17.0) * p.z) + f.xy;
+        uv.y = 1.0 - uv.y;
+		//float2 rg = texture(iChannel0, (uv + 0.5)/256.0, -100.0).yx;
+		float2 rg = Texture2DSample(NoiseTex, TexSampler, (uv + 0.5)/256.0).yx;
+        return lerp(rg.x, rg.y, f.z);
+
+    }
+	
+    float fractal_noise(float3 p, float iTime, Texture2D NoiseTex, SamplerState TexSampler)
+	{
+		float f = 0.0;
+		// add animation
+		p = p - float3(-0.5, 0.5, 0.0) * iTime * 0.1;
+        //p = p - float3(-0.5, 0.5, 0.0)  * 0.1;
+		p = p * 3.0;
+        f += 0.50000 * noise(p, NoiseTex, TexSampler);
+        p = 2.0 * p;
+        f += 0.25000 * noise(p, NoiseTex, TexSampler);
+        p = 2.0 * p;
+        f += 0.12500 * noise(p, NoiseTex, TexSampler);
+        p = 2.0 * p;
+        f += 0.06250 * noise(p, NoiseTex, TexSampler);
+        p = 2.0 * p;
+        f += 0.03125 * noise(p, NoiseTex, TexSampler);
+		
+		return f;
+        
+	}
+	
+	float sphIntersect( float3 ro, float3 rd, float3 spherePos, float radius )
+	{
+	//https://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
+        float3 oc = ro - spherePos;
+		float b = dot( oc, rd );
+		float c = dot( oc, oc ) - radius*radius;
+		float h = b*b - c;
+		if( h<0.0 ) return -1.0;
+		h = sqrt( h );
+		return -b - h;
+	}
+
+	float BeerLambert(float thickness)
+	{
+	   //return pow(2.71, -thickness); 
+	   // return 1.0;
+		return exp(-thickness);
+	}
+	
+	
+    float density(float3 pos, float dist, float radius, float DensityScalor, float time, Texture2D NoiseTex, SamplerState TexSampler)
+	{    
+        pos /= 50.0;
+        dist /= 50.0;
+        radius /= 50.0;
+        
+        float den = -0.2 - dist * 1.5 + 3.0 * fractal_noise(pos, time, NoiseTex, TexSampler);
+		den = clamp(den, 0.0, 1.0);
+		float size = 0.8;
+		float edge = 1.0 - smoothstep(size*radius, radius, dist);
+		edge *= edge;
+		den *= edge;
+		return den * DensityScalor;
+	}
+
+    float4 shading(float4 BaseColor, float4 CenterColor, float dist, float cof, float radius)
+	{
+        return lerp(CenterColor, BaseColor, pow(abs(dist / radius), cof));
+    }
+	
+    float4 raymarching(float3 ro, float3 rd, float t, float radius, float3 spherePos, float DensityScalor, float iTime, Texture3D noiseTex, SamplerState TexSampler)
+    {
+        float MarchStep = 1.0;
+        float accumdist = 0.0;
+        float4 finalColor = float4(0, 0, 0, 0);
+        float3 pos = ro + rd * t;
+        //pos = pos - spherePos;//transfer to local pos
+        
+        //int totalStep = 2.0 * radius / MarchStep;
+        //int totalStep = 200;
+        for (int i = 0; i < 100; i++)
+        {
+            float dist = length(pos - spherePos);
+            //float dist = length(pos);
+            if (dist > radius + 0.01)
+                break;
+        
+            //float den = density(pos, dist, radius, DensityScalor, iTime, noiseTex, TexSampler);
+            //den = noise(pos, noiseTex, TexSampler) * 0.1;
+            float3 moveOffset = iTime * 0.15 * float3(1, 1, 1);
+            float den = Texture3DSample(noiseTex, TexSampler, (pos - spherePos) / radius + moveOffset).
+            r * DensityScalor;
+            accumdist += den * MarchStep;
+        
+        
+            float4 sampleColor = shading(float4(1, 1, 1, 1), float4(abs(sin(iTime / 1.0)), abs(cos(iTime / 2.0)), abs(sin(iTime / 3.0)), 1), dist, 0.2, radius);
+            float alpha = (1.0 - BeerLambert(den * MarchStep));
+        
+        //finalColor = finalColor + (sampleColor * alpha) * (1.0-finalColor.a);
+            finalColor = finalColor + (sampleColor * alpha) * (1.0 - finalColor.a);
+        
+            
+            t += MarchStep;
+            pos = ro + rd * t;
+        }
+    //use Beer Lambert law calculate opacity
+        float opacity = BeerLambert(accumdist);
+        //opacity = 0.5;
+        //return float4(float3(sin(iTime), 0, 1), 1.0 - opacity);
+        return float4(finalColor.rgb, 1.0 - opacity);
+    }
+
+};
+
+RMStrutct RM;
+float4 finalCol = float4(0, 0, 0, 0);
+
+float3 ro = CameraPosition;
+float3 rd = CameraVector;
+float3 sPos = SpherePos;
+
+float dist = RM.sphIntersect(ro, rd, sPos, SphereRadius);
+
+  
+    if (dist > 0.0) {
+        finalCol = RM.raymarching(ro, rd, dist, SphereRadius, sPos, DensityScalor, Time , NoiseTex, NoiseTexSampler);
+        //finalCol = float4(1, 0,0, 1);
+    }
+    
+    //return float4(sin(Time),0,1, finalCol.a);
+return finalCol;
+

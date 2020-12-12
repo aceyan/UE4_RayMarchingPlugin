@@ -1,0 +1,522 @@
+struct SDFs
+{
+//---------------------- geometry parameters ------------------
+//0-sdSphere  pSphereRadius 
+//1-sdBox  pBoxDimension
+//2-sdRoundBox pBoxDimension, pRound
+//3-sdTorus  pTorusDimension
+//4-sdLink pLinkLength, pLinkRadius1, pLinkRadius2
+//5-sdCappedCylinder pCylinderRadius, pCylinderLength
+//6-sdCone pConeAngle,pConeLength
+//7-sdCapsule pCapsuleDimension1, pCapsuleDimension2, pCapsuleRadius
+
+//------------------------ operation parameters ----------------------
+//operationType 0-Union 1-Subtraction 2-Intersection
+//operandIndex
+//smooth
+
+
+	float sdByType(float3 pos, float pGeometryType, 
+			float pSphereRadius, 
+			float3 pBoxDimension,
+			float pRound,
+			float2 pTorusDimension,
+			float pLinkLength, float pLinkRadius1, float pLinkRadius2,
+			float pCylinderRadius, float pCylinderLength,
+			float2 pConeAngle, float  pConeLength,
+			float3 pCapsuleDimension1, float3 pCapsuleDimension2, float pCapsuleRadius)
+	{
+		float dist = 0;
+		if(pGeometryType == 0.0)
+		{
+			dist = sdSphere(pos, pSphereRadius);
+		}
+		else if(pGeometryType == 1.0)
+		{
+			dist = sdBox(pos, pBoxDimension);
+		}
+		else if(pGeometryType == 2.0)
+		{
+			dist = sdRoundBox(pos, pBoxDimension, pRound);
+		}
+		else if(pGeometryType == 3.0)
+		{
+			dist = sdTorus(pos, pTorusDimension);
+		}
+		else if(pGeometryType == 4.0)
+		{
+			dist = sdLink( pos,  pLinkLength,  pLinkRadius1,  pLinkRadius2 );
+		}
+		else if(pGeometryType == 5.0)
+		{
+			dist = sdCappedCylinder( pos , pCylinderRadius, pCylinderLength);
+		}
+		else if(pGeometryType == 6.0)
+		{
+			dist = sdCone( pos, pConeAngle, pConeLength);
+		}
+		else if(pGeometryType == 7.0)
+		{
+			dist = sdCapsule( pos ,  pCapsuleDimension1,  pCapsuleDimension2,  pCapsuleRadius );
+		}
+		return dist;
+	}
+	
+	float3 sdNormalByType(float3 pos, float pGeometryType, 
+			float pSphereRadius, 
+			float3 pBoxDimension,
+			float pRound,
+			float2 pTorusDimension,
+			float pLinkLength, float pLinkRadius1, float pLinkRadius2,
+			float pCylinderRadius, float pCylinderLength,
+			float2 pConeAngle, float  pConeLength,
+			float3 pCapsuleDimension1, float3 pCapsuleDimension2, float pCapsuleRadius)
+	{
+		float3 normal = 0;
+		if(pGeometryType == 0.0)
+		{
+			normal = sdSphereNormal(pos, pSphereRadius);
+		}
+		else if(pGeometryType == 1.0)
+		{
+			normal = sdBoxNormal(pos , pBoxDimension);
+		}
+		else if(pGeometryType == 2.0)
+		{
+			normal = sdRoundBoxNormal(pos , pBoxDimension, pRound);
+		}
+		else if(pGeometryType == 3.0)
+		{
+			normal = sdTorusNormal(pos , pTorusDimension);
+		}
+		else if(pGeometryType == 4.0)
+		{
+			normal = sdLinkNormal(pos ,  pLinkLength,  pLinkRadius1,  pLinkRadius2);
+		}
+		else if(pGeometryType == 5.0)
+		{
+			normal = sdCappedCylinderNormal( pos , pCylinderRadius, pCylinderLength);
+		}
+		else if(pGeometryType == 6.0)
+		{
+			normal = sdConeNormal( pos , pConeAngle, pConeLength);
+		}
+		else if(pGeometryType == 7.0)
+		{
+			normal = sdCapsuleNormal( pos ,  pCapsuleDimension1,  pCapsuleDimension2,  pCapsuleRadius);
+		}
+		return normal;
+	}
+	
+	
+	float sdMapFor2(float operationType, float operandIndex, float smooth,
+	
+			float3 pos, float pGeometryType, 
+			float pSphereRadius, 
+			float3 pBoxDimension,
+			float pRound,
+			float2 pTorusDimension,
+			float pLinkLength, float pLinkRadius1, float pLinkRadius2,
+			float pCylinderRadius, float pCylinderLength,
+			float2 pConeAngle, float  pConeLength,
+			float3 pCapsuleDimension1, float3 pCapsuleDimension2, float pCapsuleRadius,
+			
+			float3 pos2, float p2GeometryType, 
+			float p2SphereRadius, 
+			float3 p2BoxDimension,
+			float p2Round,
+			float2 p2TorusDimension,
+			float p2LinkLength, float p2LinkRadius1, float p2LinkRadius2,
+			float p2CylinderRadius, float p2CylinderLength,
+			float2 p2ConeAngle, float  p2ConeLength,
+			float3 p2CapsuleDimension1, float3 p2CapsuleDimension2, float p2CapsuleRadius)
+	{
+		
+				float dist1 = sdByType(pos, pGeometryType,
+								pSphereRadius,
+								pBoxDimension,
+								pRound,
+								pTorusDimension,
+								pLinkLength, pLinkRadius1, pLinkRadius2,
+								pCylinderRadius, pCylinderLength,
+								pConeAngle, pConeLength,
+								pCapsuleDimension1, pCapsuleDimension2, pCapsuleRadius);
+	
+	
+	
+				float dist2 = sdByType(pos2, p2GeometryType,
+								p2SphereRadius,
+								p2BoxDimension,
+								p2Round,
+								p2TorusDimension,
+								p2LinkLength, p2LinkRadius1, p2LinkRadius2,
+								p2CylinderRadius, p2CylinderLength,
+								p2ConeAngle, p2ConeLength,
+								p2CapsuleDimension1, p2CapsuleDimension2, p2CapsuleRadius);
+								
+								
+				float operand1 = 0;
+				float operand2 = 0;
+				if(operandIndex == 0)
+				{
+					operand1 = dist1;
+					operand2 = dist2;
+				}
+				else
+				{
+					operand1 = dist2;
+					operand2 = dist1;
+				}
+				
+				float dist = 0;
+				if(operationType == 0.0)
+				{
+					dist = opSmoothUnion(operand1, operand2,  smooth);
+				}
+				else if(operationType == 1.0)
+				{
+					dist = opSmoothSubtraction(operand1, operand2,  smooth);
+				}
+				else if(operationType == 2.0)
+				{
+					dist = opSmoothIntersection(operand1, operand2,  smooth);
+				}
+				
+				return dist;
+				
+	}
+	
+	float3 sdNormalMapFor2(float operationType, float operandIndex, float smooth,
+	
+			float3 pos, float pGeometryType, 
+			float pSphereRadius, 
+			float3 pBoxDimension,
+			float pRound,
+			float2 pTorusDimension,
+			float pLinkLength, float pLinkRadius1, float pLinkRadius2,
+			float pCylinderRadius, float pCylinderLength,
+			float2 pConeAngle, float  pConeLength,
+			float3 pCapsuleDimension1, float3 pCapsuleDimension2, float pCapsuleRadius,
+			
+			float3 pos2, float p2GeometryType, 
+			float p2SphereRadius, 
+			float3 p2BoxDimension,
+			float p2Round,
+			float2 p2TorusDimension,
+			float p2LinkLength, float p2LinkRadius1, float p2LinkRadius2,
+			float p2CylinderRadius, float p2CylinderLength,
+			float2 p2ConeAngle, float  p2ConeLength,
+			float3 p2CapsuleDimension1, float3 p2CapsuleDimension2, float p2CapsuleRadius)
+	{
+			float2 offset = float2(0.01, 0);
+			
+			float d1 = sdMapFor2( operationType,  operandIndex,  smooth,
+	
+			 pos + offset.xyy,  pGeometryType, 
+			 pSphereRadius, 
+			 pBoxDimension,
+			 pRound,
+			 pTorusDimension,
+			 pLinkLength,  pLinkRadius1,  pLinkRadius2,
+			 pCylinderRadius,  pCylinderLength,
+			 pConeAngle,   pConeLength,
+			 pCapsuleDimension1,  pCapsuleDimension2,  pCapsuleRadius,
+			
+			 pos2 + offset.xyy,  p2GeometryType, 
+			 p2SphereRadius, 
+			 p2BoxDimension,
+			 p2Round,
+			 p2TorusDimension,
+			 p2LinkLength,  p2LinkRadius1,  p2LinkRadius2,
+			 p2CylinderRadius,  p2CylinderLength,
+			 p2ConeAngle,   p2ConeLength,
+			 p2CapsuleDimension1,  p2CapsuleDimension2,  p2CapsuleRadius);
+			 
+			float d2 = sdMapFor2( operationType,  operandIndex,  smooth,
+	
+			 pos - offset.xyy,  pGeometryType, 
+			 pSphereRadius, 
+			 pBoxDimension,
+			 pRound,
+			 pTorusDimension,
+			 pLinkLength,  pLinkRadius1,  pLinkRadius2,
+			 pCylinderRadius,  pCylinderLength,
+			 pConeAngle,   pConeLength,
+			 pCapsuleDimension1,  pCapsuleDimension2,  pCapsuleRadius,
+			
+			 pos2 - offset.xyy,  p2GeometryType, 
+			 p2SphereRadius, 
+			 p2BoxDimension,
+			 p2Round,
+			 p2TorusDimension,
+			 p2LinkLength,  p2LinkRadius1,  p2LinkRadius2,
+			 p2CylinderRadius,  p2CylinderLength,
+			 p2ConeAngle,   p2ConeLength,
+			 p2CapsuleDimension1,  p2CapsuleDimension2,  p2CapsuleRadius);
+			 
+			 float d3 = sdMapFor2( operationType,  operandIndex,  smooth,
+	
+			 pos + offset.yxy,  pGeometryType, 
+			 pSphereRadius, 
+			 pBoxDimension,
+			 pRound,
+			 pTorusDimension,
+			 pLinkLength,  pLinkRadius1,  pLinkRadius2,
+			 pCylinderRadius,  pCylinderLength,
+			 pConeAngle,   pConeLength,
+			 pCapsuleDimension1,  pCapsuleDimension2,  pCapsuleRadius,
+			
+			 pos2 + offset.yxy,  p2GeometryType, 
+			 p2SphereRadius, 
+			 p2BoxDimension,
+			 p2Round,
+			 p2TorusDimension,
+			 p2LinkLength,  p2LinkRadius1,  p2LinkRadius2,
+			 p2CylinderRadius,  p2CylinderLength,
+			 p2ConeAngle,   p2ConeLength,
+			 p2CapsuleDimension1,  p2CapsuleDimension2,  p2CapsuleRadius);
+			 
+			 float d4 = sdMapFor2( operationType,  operandIndex,  smooth,
+	
+			 pos - offset.yxy,  pGeometryType, 
+			 pSphereRadius, 
+			 pBoxDimension,
+			 pRound,
+			 pTorusDimension,
+			 pLinkLength,  pLinkRadius1,  pLinkRadius2,
+			 pCylinderRadius,  pCylinderLength,
+			 pConeAngle,   pConeLength,
+			 pCapsuleDimension1,  pCapsuleDimension2,  pCapsuleRadius,
+			
+			 pos2 - offset.yxy,  p2GeometryType, 
+			 p2SphereRadius, 
+			 p2BoxDimension,
+			 p2Round,
+			 p2TorusDimension,
+			 p2LinkLength,  p2LinkRadius1,  p2LinkRadius2,
+			 p2CylinderRadius,  p2CylinderLength,
+			 p2ConeAngle,   p2ConeLength,
+			 p2CapsuleDimension1,  p2CapsuleDimension2,  p2CapsuleRadius);
+			 
+			  float d5 = sdMapFor2( operationType,  operandIndex,  smooth,
+	
+			 pos + offset.yyx,  pGeometryType, 
+			 pSphereRadius, 
+			 pBoxDimension,
+			 pRound,
+			 pTorusDimension,
+			 pLinkLength,  pLinkRadius1,  pLinkRadius2,
+			 pCylinderRadius,  pCylinderLength,
+			 pConeAngle,   pConeLength,
+			 pCapsuleDimension1,  pCapsuleDimension2,  pCapsuleRadius,
+			
+			 pos2 + offset.yyx,  p2GeometryType, 
+			 p2SphereRadius, 
+			 p2BoxDimension,
+			 p2Round,
+			 p2TorusDimension,
+			 p2LinkLength,  p2LinkRadius1,  p2LinkRadius2,
+			 p2CylinderRadius,  p2CylinderLength,
+			 p2ConeAngle,   p2ConeLength,
+			 p2CapsuleDimension1,  p2CapsuleDimension2,  p2CapsuleRadius);
+			 
+			 float d6 = sdMapFor2( operationType,  operandIndex,  smooth,
+	
+			 pos - offset.yyx,  pGeometryType, 
+			 pSphereRadius, 
+			 pBoxDimension,
+			 pRound,
+			 pTorusDimension,
+			 pLinkLength,  pLinkRadius1,  pLinkRadius2,
+			 pCylinderRadius,  pCylinderLength,
+			 pConeAngle,   pConeLength,
+			 pCapsuleDimension1,  pCapsuleDimension2,  pCapsuleRadius,
+			
+			 pos2 - offset.yyx,  p2GeometryType, 
+			 p2SphereRadius, 
+			 p2BoxDimension,
+			 p2Round,
+			 p2TorusDimension,
+			 p2LinkLength,  p2LinkRadius1,  p2LinkRadius2,
+			 p2CylinderRadius,  p2CylinderLength,
+			 p2ConeAngle,   p2ConeLength,
+			 p2CapsuleDimension1,  p2CapsuleDimension2,  p2CapsuleRadius);
+			 
+			 return normalize(float3(d1 -  d2, d3 -  d4, d5 -  d6));
+		
+			
+	}
+	
+
+	float sdSphere(float3 pos, float s)
+	{
+		float dist = length(pos) - s;
+		return dist;
+	}
+	
+	float3 sdSphereNormal(float3 pos, float s)
+	{
+		float2 offset = float2(0.01, 0);
+		return normalize(float3(
+		sdSphere(pos + offset.xyy, s) -  sdSphere(pos - offset.xyy,s),
+		sdSphere(pos + offset.yxy, s) -  sdSphere(pos - offset.yxy, s),
+		sdSphere(pos + offset.yyx, s) -  sdSphere(pos - offset.yyx, s)
+		));
+	}
+	
+	
+	float sdBox( float3 p, float3 b )
+	{
+	  float3 q = abs(p) - b;
+	  return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+	}
+	
+	float3 sdBoxNormal(float3 pos, float3 b)
+	{
+		float2 offset = float2(0.01, 0);
+		return normalize(float3(
+		sdBox(pos + offset.xyy, b) -  sdBox(pos - offset.xyy,b),
+		sdBox(pos + offset.yxy, b) -  sdBox(pos - offset.yxy, b),
+		sdBox(pos + offset.yyx, b) -  sdBox(pos - offset.yyx, b)
+		));
+	}
+	
+	
+	
+	float sdRoundBox( float3 p, float3 b, float r )
+	{
+	  float3 q = abs(p) - b;
+	  return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0) - r;
+	}
+	
+	float3 sdRoundBoxNormal(float3 p, float3 b, float r)
+	{
+		float2 offset = float2(0.01, 0);
+		return normalize(float3(
+		sdRoundBox(p + offset.xyy, b , r) -  sdRoundBox(p - offset.xyy, b , r),
+		sdRoundBox(p + offset.yxy, b , r) -  sdRoundBox(p - offset.yxy, b , r),
+		sdRoundBox(p + offset.yyx, b , r) -  sdRoundBox(p - offset.yyx, b , r)
+		));
+	}
+	
+	float sdTorus( float3 p, float2 t )
+	{
+	  float2 q = float2(length(p.xz)-t.x,p.y);
+	  return length(q)-t.y;
+	}
+	
+	float3 sdTorusNormal(float3 p, float2 t)
+	{
+		float2 offset = float2(0.01, 0);
+		return normalize(float3(
+		sdTorus(p + offset.xyy, t) -  sdTorus(p - offset.xyy, t),
+		sdTorus(p + offset.yxy, t) -  sdTorus(p - offset.yxy, t),
+		sdTorus(p + offset.yyx, t) -  sdTorus(p - offset.yyx, t)
+		));
+	}
+	
+	float sdLink( float3 p, float le, float r1, float r2 )
+	{
+	  float3 q = float3( p.x, max(abs(p.y)-le,0.0), p.z );
+	  return length(float2(length(q.xy)-r1,q.z)) - r2;
+	}
+	
+	float3 sdLinkNormal(float3 p, float le, float r1, float r2 )
+	{
+		float2 offset = float2(0.01, 0);
+		return normalize(float3(
+		sdLink(p + offset.xyy, le, r1, r2) -  sdLink(p - offset.xyy, le, r1, r2),
+		sdLink(p + offset.yxy, le, r1, r2) -  sdLink(p - offset.yxy, le, r1, r2),
+		sdLink(p + offset.yyx, le, r1, r2) -  sdLink(p - offset.yyx, le, r1, r2)
+		));
+	}
+	
+	/*
+	float sdCylinder( float3 p, float3 c )
+	{
+	  return length(p.xz-c.xy)-c.z;
+	}
+	*/
+	
+	float sdCappedCylinder( float3 p, float h, float r )
+	{
+	  float2 d = abs(float2(length(p.xz),p.y)) - float2(h,r);
+	  return min(max(d.x,d.y),0.0) + length(max(d,0.0));
+	}
+	
+	float3 sdCappedCylinderNormal(float3 p, float h, float r )
+	{
+		float2 offset = float2(0.01, 0);
+		return normalize(float3(
+		sdCappedCylinder(p + offset.xyy, h, r) -  sdCappedCylinder(p - offset.xyy, h, r),
+		sdCappedCylinder(p + offset.yxy, h, r) -  sdCappedCylinder(p - offset.yxy, h, r),
+		sdCappedCylinder(p + offset.yyx, h, r) -  sdCappedCylinder(p - offset.yyx, h, r)
+		));
+	}
+	
+	float sdCone( float3 p, float2 c, float h )
+	{
+	  // c is the sin/cos of the angle, h is height
+	  // Alternatively pass q instead of (c,h),
+	  // which is the point at the base in 2D
+	  float2 q = h*float2(c.x/c.y,-1.0);
+		
+	  float2 w = float2( length(p.xz), p.y );
+	  float2 a = w - q*clamp( dot(w,q)/dot(q,q), 0.0, 1.0 );
+	  float2 b = w - q*float2( clamp( w.x/q.x, 0.0, 1.0 ), 1.0 );
+	  float k = sign( q.y );
+	  float d = min(dot( a, a ),dot(b, b));
+	  float s = max( k*(w.x*q.y-w.y*q.x),k*(w.y-q.y)  );
+	  return sqrt(d)*sign(s);
+	}
+	
+	float3 sdConeNormal(float3 p, float2 c, float h )
+	{
+		float2 offset = float2(0.01, 0);
+		return normalize(float3(
+		sdCone(p + offset.xyy, c, h) -  sdCone(p - offset.xyy, c, h),
+		sdCone(p + offset.yxy, c, h) -  sdCone(p - offset.yxy, c, h),
+		sdCone(p + offset.yyx, c, h) -  sdCone(p - offset.yyx, c, h)
+		));
+	}
+	
+	
+	float sdCapsule( float3 p, float3 a, float3 b, float r )
+	{
+	  float3 pa = p - a, ba = b - a;
+	  float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
+	  return length( pa - ba*h ) - r;
+	}
+	
+	float3 sdCapsuleNormal(float3 p, float3 a, float3 b, float r  )
+	{
+		float2 offset = float2(0.01, 0);
+		return normalize(float3(
+		sdCapsule(p + offset.xyy, a, b, r) -  sdCapsule(p - offset.xyy, a, b, r),
+		sdCapsule(p + offset.yxy, a, b, r) -  sdCapsule(p - offset.yxy, a, b, r),
+		sdCapsule(p + offset.yyx, a, b, r) -  sdCapsule(p - offset.yyx, a, b, r)
+		));
+	}
+	
+	
+	
+	
+	
+	float opSmoothUnion( float d1, float d2, float k ) 
+	{
+		float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );
+		return lerp( d2, d1, h ) - k*h*(1.0-h);
+	}
+	
+	float opSmoothSubtraction( float d1, float d2, float k ) 
+	{
+		float h = clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
+		return lerp( d2, -d1, h ) + k*h*(1.0-h); 
+	}
+	
+	float opSmoothIntersection( float d1, float d2, float k )
+	{
+		float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );
+		return lerp( d2, d1, h ) + k*h*(1.0-h); 
+	}
+};
