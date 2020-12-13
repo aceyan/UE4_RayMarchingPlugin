@@ -4,7 +4,7 @@ This DEMO used raymarching to generate primitives, boolean operations between tw
 The main functions are encapsulated in plugin.    
 This DEMO has been tested in UE4 4.25.0. and works in VR mode.   
 
-URL of DEMO video: https://www.youtube.com/watch?v=RO-myF7PWL0 
+URL of DEMO video: https://www.youtube.com/watch?v=WWwzQocgVwE&feature=youtu.be 
 ![DemoScreenShot](ScreenShot/DemoScreenShot.png)
 
 ## Features
