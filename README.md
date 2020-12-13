@@ -1,24 +1,24 @@
 # UE4 raymarching Plugin Demo
 
-This DEMO used raymarching to generate primitives, boolean operations between two ray-marched primitives and volume-texture-based cloud  in UE4. The main functions are encapsulated in plugin.
-This DEMO has been tested in UE4 4.25.0. and works in VR mode.
+This DEMO used raymarching to generate primitives, boolean operations between two ray-marched primitives and volume-texture-based cloud  in UE4.   
+The main functions are encapsulated in plugin.    
+This DEMO has been tested in UE4 4.25.0. and works in VR mode.   
 
 URL of DEMO video: https://www.youtube.com/watch?v=RO-myF7PWL0 
-
 ![DemoScreenShot](ScreenShot/DemoScreenShot.png)
-
 
 ## Features
 ### 1.	raymarching primitives
-Using UE4 material editor and custom node/shader to generate geometries with different shapes and normals for geometries. Enabling UE4 built-in lighting mode and make it work for rendering raymarching geometries.
-As long as we know the SDF(signed distance function) for a shape, we are able to extend the shape that we allow user to create and generate right normals for the shape.
-Exposing many parameters to blueprint and allowing users to adjust shape and geometric attributes at run time, such as radius for a shpere or dimension for a box.
-Providing auto scaling functionality.When the user adjusts the geometric attributes, the shpere mesh used to do the raymarching will be scaled accordingly to adapt to the size of the geometric shapes.
+1. Using UE4 material editor and custom node/shader to generate geometries with different shapes and normals for geometries.   
+2. Enabling UE4 built-in lighting mode and make it work for rendering raymarching geometries.
+3. As long as we know the SDF(signed distance function) for a shape, we are able to extend the shape that we allow user to create and generate right normals for the shape.
+4. Exposing many parameters to blueprint and allowing users to adjust shape and geometric attributes at run time, such as radius for a shpere or dimension for a box.    
+5. Providing auto scaling functionality. When the user adjusts the geometric attributes, the shpere mesh used to do the raymarching will be scaled accordingly to adapt to the size of the geometric shapes.
 ![feature1](ScreenShot/feature1.png)
 
 ### 2.	raymarching boolean operations
-Supporting three boolean operations between two raymarching geometry, allowing users to adjust shape and geometric attributes for each geometry engaged in the operation at run time.
-Supporting blending two geometry when doing boolean operation by using smooth parameter.
+1. Supporting three boolean operations between two raymarching geometry, allowing users to adjust shape and geometric attributes for each geometry engaged in the operation at run time.   
+2. Supporting blending two geometry when doing boolean operation by using smooth parameter.
 ![feature2](ScreenShot/feature2.png)
 
 ### 3.	Fog
@@ -47,9 +47,8 @@ The shader code for raymarching is inside the Shaders folder of plugin.
 ### 2. raymarching boolean operations
 It is not hard to apply boolean operation, after we have sdf for geometries that are engaged in the operation. By using these formula, we can easily implement boolean operations with full-screen raymarching. However, since we hope to allow user changing geometric atrributes for raymarching objects at run time, things become a little tricky.
 Different from only using one render pass to draw the both geometry applying certain operation in full-screen raymarching, We use two pass to draw them seprately for our purpose.
-Thus, this means that when two objects render with a separate render pass, they must have this geometric information for each other to draw the intersecting parts. So, I designed a Blueprint to act as a medium to synchronize geometric information between two objects.
-Here is a illustration to explian.
-![implementation2](ScreenShot/implementation2.png)
+Thus, this means that when two objects render with a separate render pass, they must have this geometric information for each other to draw the intersecting parts. So, I designed a Blueprint to act as a medium to synchronize geometric information between two objects. Here is a illustration to explian.    
+![implementation2](ScreenShot/implementation2.png)    
 The green part in the illustration may be drawn in both passes, but thanks to z-test, the result of one pass will not be displayed. This is a trade off for flexibility.
 
 ### 3.	Fog
