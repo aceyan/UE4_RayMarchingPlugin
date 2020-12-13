@@ -45,14 +45,14 @@ In the material blueprint, I using a custom node in which I calculate opacity an
 The shader code for raymarching is inside the Shaders folder of plugin.
 
 ### 2. raymarching boolean operations
-It is not hard to apply boolean operation, after we have sdf for geometries that are engaged in the operation. By using these formula, we can easily implement boolean operations with full-screen raymarching. However, since we hope to allow user changing geometric atrributes for raymarching objects at run time, things become a little tricky.
+It is not hard to apply boolean operation, after we having sdf for geometries that are engaged in the operation. By using [formula from this article](https://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm), we can easily implement boolean operations with full-screen raymarching. However, since we hope to allow user changing geometric atrributes for raymarching objects at run time, things become a little tricky.
 Different from only using one render pass to draw the both geometry applying certain operation in full-screen raymarching, We use two pass to draw them seprately for our purpose.
-Thus, this means that when two objects render with a separate render pass, they must have this geometric information for each other to draw the intersecting parts. So, I designed a Blueprint to act as a medium to synchronize geometric information between two objects. Here is a illustration to explain.    
+Thus, this means that when two objects render with a separate render pass, they must have geometric information of each other to draw the intersection of two geometries. So, I designed a Blueprint to act as a medium to synchronize geometric information between two objects. Here is a illustration to explain.    
 ![implementation2](ScreenShot/implementation2.png)    
 The green part in the illustration may be drawn in both passes, but thanks to z-test, the result of one pass will not be displayed. This is a trade off for flexibility.
 
 ### 3.	Fog
-1. Using raymarching instead of Sphere marching to achieve volume rendering, simpling data from a 3D texture to calculate the density of fog in each step, and then apply beer-Lambert Law to calculate the transparency of fog. Inspired by [Creating a Volumetric Ray Marcher](https://shaderbits.com/blog/creating-volumetric-ray-marcher) 
+1. Using raymarching instead of sphere marching to achieve volume rendering, simpling data from a 3D texture to calculate the density of fog in each step, and then apply beer-Lambert Law to calculate the transparency of fog. Inspired by [Creating a Volumetric Ray Marcher](https://shaderbits.com/blog/creating-volumetric-ray-marcher) 
 2. Taking advantage of volumetric plugin in UE4, Generating volumetric fog and implement AO and shadow for it.
 Inspired by [Create nice and feasible volumetric cloud in Unreal Engine 4](http://asher.gg/?p=2600)
 
