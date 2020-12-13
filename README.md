@@ -67,8 +67,8 @@ Taking the inspiration from [raymarching terrains](https://iquilezles.org/www/ar
 
 
 ## References
-[raymarching distance fields - 2008](https://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm)   
-[normals for an SDF - 2015](https://iquilezles.org/www/articles/normalsSDF/normalsSDF.htm)   
-[Creating a Volumetric Ray Marcher](https://shaderbits.com/blog/creating-volumetric-ray-marcher) 
-[Create nice and feasible volumetric cloud in Unreal Engine 4](http://asher.gg/?p=2600)
+[raymarching distance fields - 2008](https://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm)    
+[normals for an SDF - 2015](https://iquilezles.org/www/articles/normalsSDF/normalsSDF.htm)    
+[Creating a Volumetric Ray Marcher](https://shaderbits.com/blog/creating-volumetric-ray-marcher)    
+[Create nice and feasible volumetric cloud in Unreal Engine 4](http://asher.gg/?p=2600)    
 [raymarching terrains](https://iquilezles.org/www/articles/terrainmarching/terrainmarching.htm).
