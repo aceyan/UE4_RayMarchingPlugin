@@ -22,15 +22,15 @@ URL of DEMO video: https://www.youtube.com/watch?v=WWwzQocgVwE&feature=youtu.be
 ![feature2](ScreenShot/feature2.png)
 
 ### 3.	Fog
-1. raymarching cloud in a sphere area based on volume texture
+1. Rraymarching cloud in a sphere area based on volume texture    
 using raymarching method to generate cloud effect inside a shpere based on sampling 3D texture.
 ![feature3-1](ScreenShot/feature3-1.png)
 2. Rraymarching area fog based on UE volumetric plugin
 ![feature3-2](ScreenShot/feature3-2.png)
 
 ### 4.	Basic raymarching terrian/wave
-The demo shows the basic method of generating Terrian and calculating Normal by using raymarching.
-But because of the large scope that is usually required to cover when rendering terrain, using RayMarching might bring performance hit to program.
+The demo shows the basic method of generating terrian and calculating normal for the terrian by using raymarching.
+But because of the large scope that is usually required to cover when rendering terrain, using raymarching might bring performance hit to program.
 ![feature4](ScreenShot/feature4.png)
 
 
