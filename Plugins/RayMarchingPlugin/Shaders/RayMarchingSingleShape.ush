@@ -45,9 +45,9 @@ for (int i = 0; i < pMaxSteps; i++)
 
 	//rotate sample point
 	float3 samplePos = pos - pObjectPosition;
-	float Xcomponent = dot(samplePos, rotMatRow1);
-	float Ycomponent = dot(samplePos, rotMatRow2);
-	float Zcomponent = dot(samplePos, rotMatRow3);
+	float Xcomponent = dot(samplePos, pRotMatRow1);
+	float Ycomponent = dot(samplePos, pRotMatRow2);
+	float Zcomponent = dot(samplePos, pRotMatRow3);
 	samplePos = float3(Xcomponent, Ycomponent, Zcomponent);
 	float dist = sdfLibrary.sdByType(samplePos, pGeometryType,
 				pSphereRadius,
@@ -76,9 +76,9 @@ for (int i = 0; i < pMaxSteps; i++)
 				pCapsuleDimension1, pCapsuleDimension2, pCapsuleRadius);
 				
 		//transfer normal back to world space
-	float NXcomponent = dot(normal, float3(rotMatRow1.x , rotMatRow2.x, rotMatRow3.x));
-	float NYcomponent = dot(normal, float3(rotMatRow1.y , rotMatRow2.y, rotMatRow3.y));
-	float NZcomponent = dot(normal, float3(rotMatRow1.z , rotMatRow2.z, rotMatRow3.z));
+	float NXcomponent = dot(normal, float3(pRotMatRow1.x , pRotMatRow2.x, pRotMatRow3.x));
+	float NYcomponent = dot(normal, float3(pRotMatRow1.y , pRotMatRow2.y, pRotMatRow3.y));
+	float NZcomponent = dot(normal, float3(pRotMatRow1.z , pRotMatRow2.z, pRotMatRow3.z));
 	normal = float3(NXcomponent, NYcomponent, NZcomponent);
 	
         break;
