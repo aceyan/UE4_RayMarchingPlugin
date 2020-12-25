@@ -43,9 +43,13 @@ for (int i = 0; i < pMaxSteps; i++)
 	if(pSceneDepth < length(pos - pCameraPosition)) 
 	break;
 
-
-	
-	float dist = sdfLibrary.sdByType(pos - pObjectPosition, pGeometryType,
+	//rotate sample point
+	float3 samplePos = pos - pObjectPosition;
+	float Xcomponent = dot(samplePos, rotMatRow1);
+	float Ycomponent = dot(samplePos, rotMatRow2);
+	float Zcomponent = dot(samplePos, rotMatRow3);
+	samplePos = float3(Xcomponent, Ycomponent, Zcomponent);
+	float dist = sdfLibrary.sdByType(samplePos, pGeometryType,
 				pSphereRadius,
 				pBoxDimension,
 				pRound,
@@ -61,7 +65,7 @@ for (int i = 0; i < pMaxSteps; i++)
         col = float4(1, 0,0,1);
 		
 		
-		normal = sdfLibrary.sdNormalByType(pos - pObjectPosition, pGeometryType,
+		normal = sdfLibrary.sdNormalByType(samplePos, pGeometryType,
 				pSphereRadius,
 				pBoxDimension,
 				pRound,
@@ -71,8 +75,12 @@ for (int i = 0; i < pMaxSteps; i++)
 				pConeAngle, pConeLength,
 				pCapsuleDimension1, pCapsuleDimension2, pCapsuleRadius);
 				
-		
-		
+		//transfer normal back to world space
+	float NXcomponent = dot(normal, float3(rotMatRow1.x , rotMatRow2.x, rotMatRow3.x));
+	float NYcomponent = dot(normal, float3(rotMatRow1.y , rotMatRow2.y, rotMatRow3.y));
+	float NZcomponent = dot(normal, float3(rotMatRow1.z , rotMatRow2.z, rotMatRow3.z));
+	normal = float3(NXcomponent, NYcomponent, NZcomponent);
+	
         break;
     }
     pos += pCameraVector * dist;//need
